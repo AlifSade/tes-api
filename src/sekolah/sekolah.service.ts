@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { AddsekolahDTO } from './sekolah.dto';
 
 @Injectable()
 export class SekolahService {
@@ -9,6 +10,19 @@ export class SekolahService {
 
   async list(body: any) {
     const sekolahlist = await this.prisma.sekolah.findMany({});
+
+    return sekolahlist;
+  }
+
+  async add(body: AddsekolahDTO) {
+    const sekolahlist = await this.prisma.sekolah.create({
+      data: {
+        nama: body.nama,
+        email: body.email,
+        no_telp: body.no_telp,
+        alamat: body.alamat,
+      },
+    });
 
     return sekolahlist;
   }
