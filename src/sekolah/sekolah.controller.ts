@@ -1,7 +1,7 @@
 import { Body, Controller, Logger, Post, Response } from '@nestjs/common';
 import { SekolahService } from './sekolah.service';
 import { OKException } from 'src/utilities/ok.exception';
-import { AddsekolahDTO } from './sekolah.dto';
+import { AddsekolahDTO, UpdatesekolahDTO } from './sekolah.dto';
 
 @Controller('sekolah')
 export class SekolahController {
@@ -21,6 +21,13 @@ export class SekolahController {
   @Post('add')
   async add(@Body() body: AddsekolahDTO, @Response() res: any) {
     const signin = await this.sekolahservice.add(body);
+
+    throw new OKException(signin, 'Success');
+  }
+
+  @Post('update')
+  async update(@Body() body: UpdatesekolahDTO, @Response() res: any) {
+    const signin = await this.sekolahservice.update(body);
 
     throw new OKException(signin, 'Success');
   }
