@@ -1,0 +1,237 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "./generated/client"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model admin {
+  id         Int       @id @default(autoincrement())
+  uuid       String?   @unique(map: "uuid") @default(dbgenerated("(uuid())")) @db.Char(36)
+  name       String    @db.VarChar(200)
+  status     Int       @default(0) @db.SmallInt
+  created_at DateTime  @default(now()) @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  created_by String?   @db.VarChar(100)
+  updated_by String?   @db.VarChar(100)
+  deleted_at DateTime? @db.DateTime(0)
+  user       user?
+}
+
+model file {
+  id         BigInt    @id @default(autoincrement())
+  uuid       String    @default(dbgenerated("(uuid())")) @db.Char(36)
+  path       String    @db.Text
+  name       String    @db.VarChar(200)
+  size       Int       @default(0)
+  type       String    @db.VarChar(100)
+  created_at DateTime  @default(now()) @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  created_by String    @db.VarChar(200)
+  updated_by String    @db.VarChar(200)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model level_pendidikan {
+  id         Int       @id @default(autoincrement())
+  uuid       String    @unique(map: "uuid") @db.Char(36)
+  nama       String    @unique(map: "nama") @db.VarChar(200)
+  keterangan String?   @db.Text
+  status     Int       @default(0) @db.SmallInt
+  created_at DateTime  @default(now()) @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  created_by String?   @db.VarChar(100)
+  updated_by String?   @db.VarChar(100)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model peserta {
+  id                  BigInt                  @id @default(autoincrement())
+  uuid                String                  @unique(map: "uuid") @db.Char(36)
+  nama_lengkap        String                  @db.Text
+  kewarganegaraan     peserta_kewarganegaraan @default(WNI)
+  nik                 String                  @db.Text
+  nik_hash            String                  @unique(map: "nik_hash") @db.VarChar(64)
+  tanggal_lahir       DateTime                @db.Date
+  jenis_kelamin       peserta_jenis_kelamin   @default(L)
+  no_hp               String?                 @db.VarChar(20)
+  email               String                  @db.VarChar(255)
+  tempat_lahir        String?                 @db.VarChar(200)
+  level_pendidikan_id Int?
+  provinsi_id         String?                 @db.VarChar(10)
+  alamat              String?                 @db.Text
+  lat                 Decimal?                @db.Decimal(10, 8)
+  lng                 Decimal?                @db.Decimal(11, 8)
+  status              Int                     @default(0) @db.SmallInt
+  created_at          DateTime                @default(now()) @db.DateTime(0)
+  updated_at          DateTime?               @db.DateTime(0)
+  created_by          String?                 @db.VarChar(100)
+  updated_by          String?                 @db.VarChar(100)
+  deleted_at          DateTime?               @db.DateTime(0)
+  user                user[]
+}
+
+model t_kecamatan {
+  id         String    @id @db.VarChar(10)
+  uuid       String    @unique(map: "t_kecamatan_uuid_uindex") @default(dbgenerated("(uuid())")) @db.Char(36)
+  nama       String    @db.VarChar(32)
+  latitude   Float     @default(0)
+  longitude  Float     @default(0)
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  created_by String?   @db.VarChar(100)
+  updated_by String?   @db.VarChar(100)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model t_kelurahan {
+  id         String    @id @db.VarChar(10)
+  uuid       String    @unique(map: "t_kelurahan_uuid_uindex") @default(dbgenerated("(uuid())")) @db.Char(36)
+  nama       String    @db.VarChar(32)
+  latitude   Float     @default(0)
+  longitude  Float     @default(0)
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @db.Date
+  created_by String?   @db.VarChar(100)
+  updated_by String?   @db.VarChar(100)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model t_kota {
+  id         String    @id @db.VarChar(10)
+  uuid       String    @unique(map: "t_kota_uuid_uindex") @default(dbgenerated("(uuid())")) @db.Char(36)
+  nama       String    @db.VarChar(32)
+  latitude   Float     @default(0)
+  longitude  Float     @default(0)
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  created_by String?   @db.VarChar(100)
+  updated_by String?   @db.VarChar(100)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model t_provinsi {
+  id         String    @id @db.VarChar(10)
+  uuid       String    @unique(map: "t_provinsi_uuid_uindex") @default(dbgenerated("(uuid())")) @db.Char(36)
+  nama       String    @db.VarChar(32)
+  latitude   Float     @default(0)
+  longitude  Float     @default(0)
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  created_by String?   @db.VarChar(100)
+  updated_by String?   @db.VarChar(100)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user {
+  id                  BigInt       @id @default(autoincrement())
+  uuid                String       @unique(map: "uuid") @default(dbgenerated("(uuid())")) @db.Char(36)
+  username            String       @unique(map: "username") @db.VarChar(50)
+  admin_id            Int?         @unique(map: "admin_id")
+  peserta_id          BigInt?
+  user_role_id        Int?         @unique(map: "user_role_id")
+  otp                 String?      @db.VarChar(6)
+  otp_expired         DateTime?    @db.DateTime(0)
+  complete_onboarding Boolean?     @default(false)
+  token               String?      @db.Text
+  refresh_token       String?      @db.Text
+  verified            Int?         @default(0) @db.TinyInt
+  status              Int          @db.SmallInt
+  created_at          DateTime     @default(now()) @db.DateTime(0)
+  updated_at          DateTime?    @db.DateTime(0)
+  created_by          String       @db.VarChar(100)
+  updated_by          String?      @db.VarChar(100)
+  deleted_at          DateTime?    @db.DateTime(0)
+  admin               admin?       @relation(fields: [admin_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "user_admin_id")
+  peserta             peserta?     @relation(fields: [peserta_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "user_peserta_id")
+  user_role           user_role?   @relation(fields: [user_role_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "user_user_role_id")
+  user_token          user_token[]
+
+  @@index([peserta_id], map: "user_peserta_id")
+  @@index([user_role_id], map: "user_user_role_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user_permission {
+  id                   Int                    @id @default(autoincrement())
+  uuid                 String?                @unique(map: "uuid") @default(dbgenerated("(uuid())")) @db.Char(36)
+  name                 String                 @unique(map: "name") @db.VarChar(250)
+  description          String?                @db.Text
+  status               Int                    @default(1) @db.SmallInt
+  created_at           DateTime               @default(now()) @db.DateTime(0)
+  updated_at           DateTime?              @db.DateTime(0)
+  created_by           String                 @db.VarChar(100)
+  updated_by           String?                @db.VarChar(100)
+  deleted_at           DateTime?              @db.DateTime(0)
+  user_role_permission user_role_permission[]
+}
+
+model user_role {
+  id                   Int                    @id @default(autoincrement())
+  uuid                 String?                @unique(map: "uuid") @default(dbgenerated("(uuid())")) @db.Char(36)
+  name                 String                 @unique(map: "name") @db.VarChar(250)
+  created_at           DateTime               @default(now()) @db.DateTime(0)
+  updated_at           DateTime?              @db.DateTime(0)
+  created_by           String                 @db.VarChar(100)
+  updated_by           String?                @db.VarChar(100)
+  deleted_at           DateTime?              @db.DateTime(0)
+  user                 user?
+  user_role_permission user_role_permission[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user_role_permission {
+  id                 Int             @id @default(autoincrement())
+  uuid               String?         @unique(map: "uuid") @default(dbgenerated("(uuid())")) @db.Char(36)
+  user_role_id       Int
+  user_permission_id Int
+  status             Int             @default(1) @db.SmallInt
+  created_at         DateTime        @default(now()) @db.DateTime(0)
+  created_by         String          @db.VarChar(100)
+  updated_at         DateTime?       @db.DateTime(0)
+  updated_by         String?         @db.VarChar(100)
+  deleted_at         DateTime?       @db.DateTime(0)
+  user_permission    user_permission @relation(fields: [user_permission_id], references: [id], onUpdate: Restrict, map: "user_role_permission_user_permission_id")
+  user_role          user_role       @relation(fields: [user_role_id], references: [id], onUpdate: Restrict, map: "user_role_permission_user_role_id")
+
+  @@index([user_permission_id], map: "user_role_permission_user_permission_id")
+  @@index([user_role_id], map: "user_role_permission_user_role_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user_token {
+  id          Int       @id @default(autoincrement())
+  uuid        String    @unique(map: "uuid") @default(dbgenerated("(uuid())")) @db.Char(36)
+  user_id     BigInt?
+  name        String?   @db.VarChar(100)
+  secret      String    @db.Text
+  private_key String    @db.Text
+  public_key  String    @db.Text
+  status      Int       @default(0) @db.SmallInt
+  description String?   @db.Text
+  created_at  DateTime  @default(now()) @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  created_by  String?   @db.VarChar(100)
+  updated_by  String?   @db.VarChar(100)
+  deleted_at  DateTime? @db.DateTime(0)
+  user        user?     @relation(fields: [user_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "user_token_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+enum peserta_kewarganegaraan {
+  WNI
+  WNA
+}
+
+enum peserta_jenis_kelamin {
+  L
+  P
+}
